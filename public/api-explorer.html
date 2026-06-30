@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Testing Console | Smart Bus Route Finder</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f766e'/%3E%3C/svg%3E" />
+  <style>
+    :root { --bg:#0f1720; --panel:#16212e; --line:#243140; --teal:#2dd4bf; --muted:#7d8da0; --green:#4ade80; --amber:#fbbf24; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:#e6edf3; }
+    header { background:linear-gradient(100deg,#0b5750,#0f766e); padding:16px 22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+    header h1 { font-size:1.05rem; margin:0; font-weight:700; }
+    header .sub { color:#bdeae4; font-size:.78rem; }
+    header .grp { font-size:.78rem; color:#d7f5f0; }
+    .wrap { display:grid; grid-template-columns:300px 1fr; gap:0; height:calc(100vh - 64px); }
+    .side { background:var(--panel); border-right:1px solid var(--line); overflow:auto; padding:12px; }
+    .grouph { color:var(--muted); font-size:.7rem; text-transform:uppercase; letter-spacing:.6px; margin:14px 8px 6px; }
+    .ep { display:flex; align-items:center; gap:8px; padding:7px 9px; border-radius:7px; cursor:pointer; font-size:.8rem; color:#cdd9e5; }
+    .ep:hover { background:#1d2a39; }
+    .ep .m { font-size:.62rem; font-weight:700; padding:2px 5px; border-radius:4px; min-width:42px; text-align:center; }
+    .m.GET { background:rgba(45,212,191,.15); color:var(--teal); }
+    .m.POST { background:rgba(74,222,128,.15); color:var(--green); }
+    .m.PUT { background:rgba(251,191,36,.15); color:var(--amber); }
+    .m.DELETE { background:rgba(248,113,113,.15); color:#f87171; }
+    .main { padding:18px 22px; overflow:auto; }
+    .runbar { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+    button.run { background:var(--teal); color:#06231f; border:none; padding:9px 15px; border-radius:8px; font-weight:700; cursor:pointer; font-size:.82rem; }
+    button.run.alt { background:#1d2a39; color:#cdd9e5; border:1px solid var(--line); }
+    .req { background:var(--panel); border:1px solid var(--line); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+    .req .top { display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+    .req .path { font-family:'JetBrains Mono',Consolas,monospace; font-size:.82rem; color:#cdd9e5; }
+    .status { font-size:.74rem; font-weight:700; padding:2px 8px; border-radius:999px; }
+    .status.ok { background:rgba(74,222,128,.16); color:var(--green); }
+    .status.err { background:rgba(248,113,113,.16); color:#f87171; }
+    .time { color:var(--muted); font-size:.74rem; margin-left:auto; }
+    pre { margin:0; padding:12px 14px; font-family:'JetBrains Mono',Consolas,monospace; font-size:.76rem; color:#b9e6df; overflow:auto; max-height:320px; line-height:1.5; }
+    .k { color:#7dd3fc; } .s { color:#bef264; } .n { color:#fca5a5; } .b { color:#fbbf24; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>API Testing Console</h1>
+      <div class="sub">Smart Local Bus Route Finder &middot; Node.js + Express + PostgreSQL (Neon)</div>
+    </div>
+    <div class="grp">Abdul Rafay (2412182) &middot; Varun Sainani (2412222)</div>
+  </header>
+  <div class="wrap">
+    <div class="side" id="side"></div>
+    <div class="main">
+      <div class="runbar">
+        <button class="run" onclick="runAll()">Run all GET tests</button>
+        <button class="run alt" onclick="crudRoundTrip()">Run CRUD round-trip (POST &rarr; GET &rarr; PUT &rarr; DELETE)</button>
+        <button class="run alt" onclick="document.getElementById('out').innerHTML=''">Clear</button>
+      </div>
+      <div id="out"></div>
+    </div>
+  </div>
+
+  <script>
+    const API = "";
+    const GETS = [
+      ["GET", "/api/health"],
+      ["GET", "/api/analytics/summary"],
+      ["GET", "/api/analytics/ridership-by-route"],
+      ["GET", "/api/analytics/modal-split"],
+      ["GET", "/api/analytics/daily-ridership"],
+      ["GET", "/api/analytics/peak-hours"],
+      ["GET", "/api/analytics/busiest-stops"],
+      ["GET", "/api/analytics/on-time-performance"],
+      ["GET", "/api/analytics/top-od-pairs"],
+      ["GET", "/api/routes?limit=3"],
+      ["GET", "/api/stops?limit=3"],
+      ["GET", "/api/finder/plan?from=18&to=43"],
+    ];
+
+    function highlight(obj) {
+      let j = JSON.stringify(obj, null, 2);
+      j = j.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      j = j.replace(/"([^"]+)":/g, '<span class="k">"$1"</span>:')
+           .replace(/: "([^"]*)"/g, ': <span class="s">"$1"</span>')
+           .replace(/: (\d+\.?\d*)/g, ': <span class="n">$1</span>')
+           .replace(/: (true|false|null)/g, ': <span class="b">$1</span>');
+      return j;
+    }
+
+    async function call(method, path, body) {
+      const t0 = performance.now();
+      const opts = { method };
+      if (body) { opts.headers = { "Content-Type": "application/json" }; opts.body = JSON.stringify(body); }
+      let status = 0, data;
+      try {
+        const r = await fetch(API + path, opts);
+        status = r.status;
+        data = await r.json();
+      } catch (e) { data = { error: e.message }; }
+      const ms = Math.round(performance.now() - t0);
+      const ok = status >= 200 && status < 300;
+      const card = document.createElement("div");
+      card.className = "req";
+      let shown = Array.isArray(data) ? data.slice(0, 6) : data;
+      card.innerHTML = `<div class="top">
+          <span class="m ${method}">${method}</span>
+          <span class="path">${path}</span>
+          <span class="status ${ok ? "ok" : "err"}">${status || "ERR"} ${ok ? "OK" : ""}</span>
+          <span class="time">${ms} ms</span>
+        </div><pre>${highlight(shown)}${Array.isArray(data) && data.length > 6 ? "\n  ... " + (data.length - 6) + " more rows" : ""}</pre>`;
+      document.getElementById("out").appendChild(card);
+      return { status, data };
+    }
+
+    async function runAll() {
+      document.getElementById("out").innerHTML = "";
+      for (const [m, p] of GETS) await call(m, p);
+    }
+
+    async function crudRoundTrip() {
+      document.getElementById("out").innerHTML = "";
+      const created = await call("POST", "/api/feedback", { passenger_id: 1, route_id: 1, rating: 5, category: "App", comment: "API test entry" });
+      const id = created.data && created.data.feedback_id;
+      if (id) {
+        await call("GET", `/api/feedback/${id}`);
+        await call("PUT", `/api/feedback/${id}`, { rating: 4, comment: "Updated via API test" });
+        await call("DELETE", `/api/feedback/${id}`);
+      }
+    }
+
+    // sidebar
+    const groups = {
+      "Analytics": GETS.filter(g => g[1].includes("/analytics")),
+      "CRUD": [["GET","/api/routes"],["POST","/api/feedback"],["PUT","/api/feedback/:id"],["DELETE","/api/feedback/:id"]],
+      "Route finder": [["GET","/api/finder/stops"],["GET","/api/finder/plan?from=18&to=43"]],
+    };
+    const side = document.getElementById("side");
+    for (const [g, list] of Object.entries(groups)) {
+      const h = document.createElement("div"); h.className = "grouph"; h.textContent = g; side.appendChild(h);
+      for (const [m, p] of list) {
+        const el = document.createElement("div"); el.className = "ep";
+        el.innerHTML = `<span class="m ${m}">${m}</span><span>${p.replace("/api/","")}</span>`;
+        el.onclick = () => call(m, p.includes(":id") ? p.replace(":id","1") : p);
+        side.appendChild(el);
+      }
+    }
+    runAll();
+  </script>
+</body>
+</html>
