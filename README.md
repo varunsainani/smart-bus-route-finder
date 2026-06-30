@@ -13,8 +13,9 @@ network using Dijkstra's shortest path algorithm and draws it on a live map.
 
 ## Live demo
 
-- Dashboard: _added after deployment_
-- API health: _added after deployment_/api/health
+- Dashboard: https://smart-bus-route-finder.vercel.app
+- API health: https://smart-bus-route-finder.vercel.app/api/health
+- API testing console: https://smart-bus-route-finder.vercel.app/api-explorer.html
 
 ## Features
 
