@@ -132,10 +132,43 @@ body {
 .chart-head small { color: var(--muted); font-weight: 500; font-size: 0.72rem; }
 .chart-card canvas { max-height: 270px; }
 
-/* ---- footer ---- */
-.app-footer { margin: 36px 0 10px; padding-top: 18px; border-top: 1px solid var(--line); }
+/* ---- site footer (normal website footer) ---- */
+.site-footer { margin-top: 44px; background: #0b3b37; color: #cfe8e4; padding: 26px 0 16px; }
+.footer-top {
+  display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap;
+  padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.footer-brand { display: flex; align-items: center; gap: 12px; }
+.footer-logo {
+  width: 40px; height: 40px; border-radius: 11px; background: rgba(255, 255, 255, 0.13);
+  display: grid; place-items: center; color: #fff; font-size: 1.2rem;
+}
+.fb-title { font-weight: 800; color: #fff; font-size: 1.02rem; }
+.fb-sub { font-size: 0.82rem; color: #9fcdc7; }
+.footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.footer-links a { color: #cfe8e4; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+.footer-links a:hover { color: #fff; }
+.footer-bottom {
+  display: flex; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap;
+  padding-top: 13px; font-size: 0.78rem; color: #89bcb6;
+}
 
+/* ---- responsive ---- */
+@media (max-width: 991px) {
+  .map-card, #map { min-height: 340px; }
+}
 @media (max-width: 575px) {
   .brand-title { font-size: 0.95rem; }
-  .kpi .kpi-val { font-size: 1.3rem; }
+  .brand-sub { display: none; }
+  .kpi { padding: 12px; }
+  .kpi .kpi-val { font-size: 1.25rem; }
+  .kpi .kpi-label { font-size: 0.68rem; }
+  .chart-card .card-body { padding: 13px 14px; }
+  .chart-card canvas { max-height: 240px; }
+  .map-card, #map { min-height: 300px; }
+  .plan-stat .v { font-size: 1rem; }
+  .footer-top { justify-content: center; text-align: center; }
+  .footer-brand { flex-direction: column; text-align: center; gap: 8px; }
+  .footer-bottom { justify-content: center; text-align: center; }
+  .status-pill { font-size: 0.68rem; padding: 4px 9px; }
 }
