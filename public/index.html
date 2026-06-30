@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Local Bus Route Finder | Karachi Transit Dashboard</title>
+  <meta name="description" content="Database driven analytical dashboard and route planner for Karachi's public bus network." />
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Leaflet -->
+  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f766e'/%3E%3Cpath d='M9 7h14a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2v2a1 1 0 0 1-2 0v-2H11v2a1 1 0 0 1-2 0v-2a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm0 4v5h14v-5H9zm2.5 8a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' fill='white'/%3E%3C/svg%3E" />
+
+  <link href="css/styles.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark app-nav sticky-top">
+    <div class="container-fluid px-3 px-lg-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <span class="brand-logo"><i class="bi bi-bus-front-fill"></i></span>
+        <span>
+          <span class="brand-title">Smart Bus Route Finder</span>
+          <span class="brand-sub d-none d-sm-block">Karachi Public Transport Dashboard</span>
+        </span>
+      </a>
+      <div class="d-flex align-items-center gap-3">
+        <span class="navbar-text small d-none d-md-block group-tag">
+          <i class="bi bi-people-fill me-1"></i>Abdul Rafay (2412182) &amp; Varun Sainani (2412222)
+        </span>
+        <span id="dbStatus" class="status-pill"><span class="dot"></span> connecting</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid px-3 px-lg-4 py-4">
+
+    <!-- ROUTE FINDER -->
+    <section class="mb-4">
+      <div class="row g-3">
+        <div class="col-lg-5">
+          <div class="card finder-card h-100">
+            <div class="card-body">
+              <h5 class="card-title section-head"><i class="bi bi-signpost-split-fill me-2"></i>Plan your journey</h5>
+              <p class="text-muted small mb-3">Find the cheapest route across the BRT and feeder network, with transfers, fare and time.</p>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">From</label>
+                <select id="fromStop" class="form-select"><option>Loading stops...</option></select>
+              </div>
+              <div class="swap-row">
+                <button id="swapBtn" class="btn btn-sm btn-swap" title="Swap"><i class="bi bi-arrow-down-up"></i></button>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">To</label>
+                <select id="toStop" class="form-select"><option>Loading stops...</option></select>
+              </div>
+              <button id="findBtn" class="btn btn-primary w-100 fw-semibold"><i class="bi bi-search me-2"></i>Find route</button>
+              <div id="planResult" class="plan-result mt-3"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="card map-card h-100">
+            <div id="map"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI CARDS -->
+    <section class="mb-2">
+      <h6 class="dash-section-title"><i class="bi bi-bar-chart-line-fill me-2"></i>Network analytics</h6>
+    </section>
+    <section id="kpiRow" class="row g-3 mb-4"></section>
+
+    <!-- CHARTS -->
+    <section class="row g-3">
+      <div class="col-xl-6">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-bus-front me-2"></i>Ridership by route</span><small>journeys in last 30 days</small></div>
+          <canvas id="ridershipChart"></canvas>
+        </div></div>
+      </div>
+      <div class="col-xl-6">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-graph-up me-2"></i>Daily ridership trend</span><small>last 30 days</small></div>
+          <canvas id="dailyRidershipChart"></canvas>
+        </div></div>
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-pie-chart-fill me-2"></i>Ridership by service type</span></div>
+          <canvas id="modalChart"></canvas>
+        </div></div>
+      </div>
+      <div class="col-xl-4 col-lg-6">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-ev-station-fill me-2"></i>Fleet by fuel type</span></div>
+          <canvas id="fuelChart"></canvas>
+        </div></div>
+      </div>
+      <div class="col-xl-4 col-lg-12">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-credit-card-2-front-fill me-2"></i>Top-ups by payment method</span></div>
+          <canvas id="paymentChart"></canvas>
+        </div></div>
+      </div>
+
+      <div class="col-xl-7">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-cash-stack me-2"></i>Daily fare revenue</span><small>PKR, last 30 days</small></div>
+          <canvas id="revenueChart"></canvas>
+        </div></div>
+      </div>
+      <div class="col-xl-5">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-clock-history me-2"></i>Passengers by hour of day</span></div>
+          <canvas id="peakChart"></canvas>
+        </div></div>
+      </div>
+
+      <div class="col-xl-6">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-geo-alt-fill me-2"></i>Busiest stops</span><small>by boardings</small></div>
+          <canvas id="stopsChart"></canvas>
+        </div></div>
+      </div>
+      <div class="col-xl-6">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-search-heart me-2"></i>Most searched destinations</span></div>
+          <canvas id="odChart"></canvas>
+        </div></div>
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-stopwatch-fill me-2"></i>On-time performance</span><small>% per route</small></div>
+          <canvas id="onTimeChart"></canvas>
+        </div></div>
+      </div>
+      <div class="col-xl-4 col-lg-6">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-star-fill me-2"></i>Average rating by route</span></div>
+          <canvas id="ratingChart"></canvas>
+        </div></div>
+      </div>
+      <div class="col-xl-4 col-lg-12">
+        <div class="card chart-card"><div class="card-body">
+          <div class="chart-head"><span><i class="bi bi-exclamation-triangle-fill me-2"></i>Incidents by type</span></div>
+          <canvas id="incidentChart"></canvas>
+        </div></div>
+      </div>
+    </section>
+
+    <footer class="app-footer text-center text-muted">
+      <div>Smart Local Bus Route Finder &middot; Database Systems Final Semester Project</div>
+      <div class="small">SZABIST University, Karachi &middot; Abdul Rafay (2412182) &amp; Varun Sainani (2412222)</div>
+      <div class="small mt-1">PostgreSQL (Neon) &middot; Node.js + Express &middot; HTML, CSS, Bootstrap, JavaScript &middot; Chart.js &middot; Leaflet</div>
+    </footer>
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/finder.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
