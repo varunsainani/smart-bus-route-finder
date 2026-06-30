@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Smart Local Bus Route Finder - Project Report</title>
+<style>
+  @page { size: A4; margin: 20mm 17mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Calibri, Arial, sans-serif; color: #1f2933; font-size: 11pt; line-height: 1.55; margin: 0; }
+  h1, h2, h3 { color: #0b5750; font-weight: 700; }
+  h2.section { font-size: 17pt; border-bottom: 3px solid #0f766e; padding-bottom: 6px; margin: 0 0 14px; }
+  h3 { font-size: 12.5pt; margin: 16px 0 6px; color: #0f766e; }
+  p { margin: 0 0 10px; text-align: justify; }
+  ul, ol { margin: 0 0 10px; padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  .page { page-break-before: always; }
+  .muted { color: #64748b; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 9.7pt; }
+  th, td { border: 1px solid #cbd5d1; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #e6f5f3; color: #0b5750; font-weight: 700; }
+  tr:nth-child(even) td { background: #f6faf9; }
+  code, .mono { font-family: "Consolas", "JetBrains Mono", monospace; font-size: 9.3pt; }
+  pre { background: #0f1720; color: #d7e6e2; border-radius: 8px; padding: 12px 14px; font-family: "Consolas", monospace; font-size: 8.6pt; line-height: 1.5; overflow: hidden; white-space: pre-wrap; }
+  pre .c { color: #6b8a86; } pre .k { color: #7dd3fc; } pre .s { color: #bef264; } pre .f { color: #fbbf24; }
+  figure { margin: 12px 0 18px; text-align: center; page-break-inside: avoid; }
+  figure img { max-width: 100%; border: 1px solid #d7e0de; border-radius: 6px; }
+  figcaption { font-size: 9pt; color: #64748b; margin-top: 6px; font-style: italic; }
+  .tag { display: inline-block; background: #e6f5f3; color: #0b5750; border-radius: 5px; padding: 1px 7px; font-size: 8.6pt; font-weight: 600; margin: 1px; }
+  .method { font-weight: 700; font-size: 8.8pt; padding: 1px 6px; border-radius: 4px; }
+  .GET { background: #d1faf4; color: #0b766a; } .POST { background: #dcfce7; color: #166534; }
+  .PUT { background: #fef3c7; color: #92580a; } .DELETE { background: #fee2e2; color: #991b1b; }
+
+  /* title page */
+  .title-page { height: 252mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .title-logo { width: 84px; height: 84px; border-radius: 20px; background: linear-gradient(135deg,#0b5750,#14b8a6); display:flex; align-items:center; justify-content:center; color:#fff; font-size: 44px; margin-bottom: 22px; }
+  .title-page h1 { font-size: 26pt; margin: 0 0 6px; color: #0b5750; }
+  .title-page .subtitle { font-size: 13pt; color: #475569; margin-bottom: 30px; }
+  .title-box { border: 2px solid #0f766e; border-radius: 12px; padding: 18px 34px; margin-bottom: 22px; }
+  .title-box .row { font-size: 12pt; margin: 4px 0; }
+  .title-meta { color: #64748b; font-size: 11pt; }
+</style>
+</head>
+<body>
+
+<!-- ===================== 1. TITLE PAGE ===================== -->
+<section class="title-page">
+  <div class="title-logo">&#128652;</div>
+  <h1>Smart Local Bus Route Finder</h1>
+  <div class="subtitle">A Database-Driven Analytical Dashboard for Karachi's Public Bus Network</div>
+  <div class="title-box">
+    <div class="row"><strong>Abdul Rafay</strong> &nbsp;(2412182)</div>
+    <div class="row"><strong>Varun Sainani</strong> &nbsp;(2412222)</div>
+  </div>
+  <div class="title-meta">
+    Final Semester Project &middot; Database Systems<br/>
+    BS Computer Science &middot; SZABIST University, Karachi<br/>
+    June 2026
+  </div>
+</section>
+
+<!-- ===================== 2. ACKNOWLEDGEMENT ===================== -->
+<section class="page">
+  <h2 class="section">Acknowledgement</h2>
+  <p>We would like to express our sincere gratitude to our course instructor for the guidance, feedback, and encouragement provided throughout the development of this project. The structured guidelines for the Database Systems final project gave us a clear path from problem identification, through database design, to the implementation of a working analytical dashboard.</p>
+  <p>We are also thankful to SZABIST University, Karachi, for providing the academic environment and resources that made this work possible. Finally, we thank our families and peers for their continuous support during the project timeline.</p>
+  <p>This project was completed as a group effort by Abdul Rafay (2412182) and Varun Sainani (2412222). Both members contributed to the database design, backend development, frontend dashboard, testing, and documentation.</p>
+</section>
+
+<!-- ===================== 3. TABLE OF CONTENTS ===================== -->
+<section class="page">
+  <h2 class="section">Table of Contents</h2>
+  <table>
+    <tr><th style="width:70px">Section</th><th>Title</th></tr>
+    <tr><td>1</td><td>Title Page</td></tr>
+    <tr><td>2</td><td>Acknowledgement</td></tr>
+    <tr><td>3</td><td>Table of Contents</td></tr>
+    <tr><td>4</td><td>List of Tables</td></tr>
+    <tr><td>5</td><td>List of Figures</td></tr>
+    <tr><td>6</td><td>Introduction</td></tr>
+    <tr><td>7</td><td>Problem Statement</td></tr>
+    <tr><td>8</td><td>Proposed Solution</td></tr>
+    <tr><td>9</td><td>Entity Relationship Diagram (ERD)</td></tr>
+    <tr><td>10</td><td>Class Diagram</td></tr>
+    <tr><td>11</td><td>Software Specifications</td></tr>
+    <tr><td>12</td><td>Database Design and Implementation</td></tr>
+    <tr><td>13</td><td>API Development (Endpoints, Methods, Testing Results)</td></tr>
+    <tr><td>14</td><td>Screenshots of API Methods</td></tr>
+    <tr><td>15</td><td>JavaScript Code Showing API Calls</td></tr>
+    <tr><td>16</td><td>Dashboard Design and Implementation</td></tr>
+    <tr><td>17</td><td>Final Output Screenshots</td></tr>
+    <tr><td>18</td><td>Conclusion</td></tr>
+    <tr><td>19</td><td>References</td></tr>
+  </table>
+</section>
+
+<!-- ===================== 4. LIST OF TABLES ===================== -->
+<section class="page">
+  <h2 class="section">List of Tables</h2>
+  <p>The database contains 21 tables, grouped into three functional areas.</p>
+  <table>
+    <tr><th style="width:60px">No.</th><th>Table</th><th>Purpose</th></tr>
+    <tr><td>1</td><td>zone</td><td>Geographic and fare zones of Karachi</td></tr>
+    <tr><td>2</td><td>operator</td><td>Bus operators running services in the city</td></tr>
+    <tr><td>3</td><td>route_type</td><td>Service category (BRT, Feeder, Electric, Intercity)</td></tr>
+    <tr><td>4</td><td>route</td><td>A named bus service</td></tr>
+    <tr><td>5</td><td>stop</td><td>A physical bus stop or BRT station</td></tr>
+    <tr><td>6</td><td>route_stop</td><td>Ordered stops on a route (the graph edges)</td></tr>
+    <tr><td>7</td><td>fare_stage</td><td>Distance band fare rules per route type</td></tr>
+    <tr><td>8</td><td>bus_model</td><td>Vehicle model specification</td></tr>
+    <tr><td>9</td><td>bus</td><td>A physical fleet vehicle</td></tr>
+    <tr><td>10</td><td>driver</td><td>Drivers employed by operators</td></tr>
+    <tr><td>11</td><td>staff</td><td>Station based staff</td></tr>
+    <tr><td>12</td><td>schedule</td><td>Scheduled trips on a route</td></tr>
+    <tr><td>13</td><td>trip_log</td><td>Completed trips (operational analytics)</td></tr>
+    <tr><td>14</td><td>maintenance</td><td>Vehicle maintenance records</td></tr>
+    <tr><td>15</td><td>passenger</td><td>Registered app users / commuters</td></tr>
+    <tr><td>16</td><td>fare_card</td><td>Stored value transit cards</td></tr>
+    <tr><td>17</td><td>card_transaction</td><td>Top ups, refunds and fare deductions</td></tr>
+    <tr><td>18</td><td>journey</td><td>Actual passenger journeys (main fact table)</td></tr>
+    <tr><td>19</td><td>route_search</td><td>Logged in-app route lookups</td></tr>
+    <tr><td>20</td><td>feedback</td><td>Passenger ratings and complaints</td></tr>
+    <tr><td>21</td><td>incident</td><td>Service incidents and disruptions</td></tr>
+  </table>
+</section>
+
+<!-- ===================== 5. LIST OF FIGURES ===================== -->
+<section class="page">
+  <h2 class="section">List of Figures</h2>
+  <table>
+    <tr><th style="width:80px">Figure</th><th>Description</th></tr>
+    <tr><td>Figure 1</td><td>Entity Relationship Diagram (21 entities)</td></tr>
+    <tr><td>Figure 2</td><td>Class Diagram (layered application architecture)</td></tr>
+    <tr><td>Figure 3</td><td>API Testing Console - GET endpoint results</td></tr>
+    <tr><td>Figure 4</td><td>API Testing Console - CRUD round trip (POST, GET, PUT, DELETE)</td></tr>
+    <tr><td>Figure 5</td><td>Analytical Dashboard - route finder and KPI cards</td></tr>
+    <tr><td>Figure 6</td><td>Analytical Dashboard - full page with all charts</td></tr>
+    <tr><td>Figure 7</td><td>Route Finder - journey plan with transfer on the map</td></tr>
+    <tr><td>Figure 8</td><td>Responsive (mobile) view of the dashboard</td></tr>
+  </table>
+</section>
+
+<!-- ===================== 6. INTRODUCTION ===================== -->
+<section class="page">
+  <h2 class="section">6. Introduction</h2>
+  <p>Public transportation in Karachi is used by millions of commuters every day. In recent years the city has introduced a structured Bus Rapid Transit (BRT) network, including the Green Line and Red Line corridors, along with the Peoples Bus Service feeder routes and a fleet of electric buses. Despite this progress, there is no single digital system that helps a passenger decide which bus to take, where to change buses, how much the journey will cost, and how long it will take.</p>
+  <p>The Smart Local Bus Route Finder is a database-driven analytical dashboard and route planning system built for this scenario. It is composed of a PostgreSQL database hosted on Neon, a REST API built with Node.js and Express, and an analytical dashboard built with HTML, CSS, Bootstrap, and JavaScript. The dashboard presents meaningful insights generated from the database, such as ridership, revenue, on-time performance, and popular destinations, while an integrated route finder computes the cheapest journey across the bus network using a shortest-path algorithm.</p>
+  <p>This report documents the complete project: the problem it addresses, the proposed solution, the database design, the API, and the analytical dashboard, along with testing results and output screenshots. The project satisfies the Database Systems final project requirements, including a relational schema of more than sixteen tables and a working analytical dashboard.</p>
+</section>
+
+<!-- ===================== 7. PROBLEM STATEMENT ===================== -->
+<section class="page">
+  <h2 class="section">7. Problem Statement</h2>
+  <h3>Existing Challenges</h3>
+  <p>New passengers and even regular commuters in Karachi face several recurring difficulties when using public transport:</p>
+  <ul>
+    <li>Lack of awareness of which bus route serves a given origin and destination pair.</li>
+    <li>Uncertainty about where to switch buses (transfer points) when no single route covers the journey.</li>
+    <li>No reliable way to estimate the fare in advance, leading to confusion or overpayment.</li>
+    <li>No reliable way to estimate travel time, making it hard to plan around work, classes, or appointments.</li>
+    <li>Route information is scattered across informal sources rather than centralised in one accessible system.</li>
+  </ul>
+  <h3>Current Limitations</h3>
+  <p>Transport authorities also lack a consolidated analytical view of their own network. Ridership, revenue, fleet utilisation, on-time performance, and passenger feedback are either not recorded digitally or are kept in disconnected systems. Without a central database, it is difficult to answer simple management questions such as which route is busiest, which stops have the highest boardings, what the daily revenue trend is, or how reliable each service is.</p>
+  <h3>Need for Automation</h3>
+  <p>A centralised, database-driven system is needed to (a) store the network, fleet, and operational data in a consistent relational structure, (b) expose this data through a REST API, and (c) present it through an analytical dashboard and a route planner. Automation removes the dependence on word of mouth for passengers and gives operators data-backed insight into their network.</p>
+  <h3>Expected Benefits</h3>
+  <ul>
+    <li>Passengers receive a clear route recommendation with fare, time, number of stops, and transfers.</li>
+    <li>Operators gain a single dashboard summarising ridership, revenue, reliability, and satisfaction.</li>
+    <li>The relational design enforces data integrity through primary keys, foreign keys, and constraints.</li>
+    <li>The architecture is extensible to a larger network and to live data sources in future work.</li>
+  </ul>
+</section>
+
+<!-- ===================== 8. PROPOSED SOLUTION ===================== -->
+<section class="page">
+  <h2 class="section">8. Proposed Solution</h2>
+  <p>The proposed solution is a three-tier web application following a clean separation between data, logic, and presentation.</p>
+  <table>
+    <tr><th style="width:130px">Layer</th><th>Technology</th><th>Responsibility</th></tr>
+    <tr><td>Database</td><td>PostgreSQL on Neon</td><td>Stores the network, fleet, and operational data across 21 related tables with full constraints</td></tr>
+    <tr><td>Backend / API</td><td>Node.js + Express</td><td>REST API for CRUD operations, analytical queries, and the route finding engine; returns JSON</td></tr>
+    <tr><td>Frontend</td><td>HTML, CSS, Bootstrap, JavaScript</td><td>Single-page analytical dashboard that consumes the API via fetch and renders charts</td></tr>
+    <tr><td>Charting</td><td>Chart.js</td><td>Bar, line, area, pie, and doughnut charts on one dashboard page</td></tr>
+    <tr><td>Mapping</td><td>Leaflet + OpenStreetMap</td><td>Visual rendering of the planned journey on a city map</td></tr>
+  </table>
+  <h3>Key Features</h3>
+  <ul>
+    <li>Graph-based journey planning with automatic transfer detection using Dijkstra's shortest path algorithm.</li>
+    <li>Fare and travel time estimation per journey using a documented fare-stage structure.</li>
+    <li>An analytical dashboard with key performance indicators and multiple chart types on a single page.</li>
+    <li>A complete REST API supporting create, read, update, and delete operations plus analytical endpoints.</li>
+    <li>A responsive, mobile-friendly interface.</li>
+  </ul>
+  <h3>Data Coverage</h3>
+  <p>The routable network covers Karachi's BRT lines (Green Line, Red Line, Orange Line), the Peoples Bus Service feeder routes (R-10, R-12), and electric bus routes (EV-1, EV-3). These routes share interchange stops such as Numaish, Tower, Gurumandir, NIPA Chowrangi, and Nagan Chowrangi, which allows the route finder to plan multi-route journeys with transfers.</p>
+</section>
+
+<!-- ===================== 9. ERD ===================== -->
+<section class="page">
+  <h2 class="section">9. Entity Relationship Diagram (ERD)</h2>
+  <p>The ERD below models the complete database. It contains 21 entities with primary keys, foreign keys, relationships, and the cardinality between them. Reference entities (zone, operator, route_type) feed the network entities (route, stop, route_stop, fare_stage), which in turn connect to the fleet and operations entities (bus, driver, schedule, trip_log) and the passenger and revenue entities (passenger, fare_card, journey, feedback).</p>
+  <figure>
+    <img src="report-assets/erd.png" alt="Entity Relationship Diagram" />
+    <figcaption>Figure 1: Entity Relationship Diagram of the Smart Local Bus Route Finder database (21 entities).</figcaption>
+  </figure>
+</section>
+
+<!-- ===================== 10. CLASS DIAGRAM ===================== -->
+<section class="page">
+  <h2 class="section">10. Class Diagram</h2>
+  <p>The class diagram shows the layered software architecture. Incoming HTTP requests reach the Express application, which routes them to the analytics, route finder, and CRUD routers. Each router delegates to a service class, and every service uses a shared database pool. The route finder service builds an itinerary from the route and stop domain models. On the client side, the dashboard application coordinates the charts and finder modules through a single API client.</p>
+  <figure>
+    <img src="report-assets/class.png" alt="Class Diagram" />
+    <figcaption>Figure 2: Class diagram showing routers, services, data access, domain models, and the frontend modules.</figcaption>
+  </figure>
+</section>
+
+<!-- ===================== 11. SOFTWARE SPECIFICATIONS ===================== -->
+<section class="page">
+  <h2 class="section">11. Software Specifications</h2>
+  <h3>Hardware Requirements</h3>
+  <table>
+    <tr><th style="width:200px">Component</th><th>Minimum Requirement</th></tr>
+    <tr><td>Processor</td><td>Dual core 2.0 GHz or higher</td></tr>
+    <tr><td>Memory (RAM)</td><td>4 GB (8 GB recommended for development)</td></tr>
+    <tr><td>Storage</td><td>500 MB free disk space</td></tr>
+    <tr><td>Network</td><td>Internet connection (the database is cloud hosted on Neon)</td></tr>
+    <tr><td>Client device</td><td>Any modern desktop or mobile device with a web browser</td></tr>
+  </table>
+  <h3>Software Requirements</h3>
+  <table>
+    <tr><th style="width:200px">Component</th><th>Requirement</th></tr>
+    <tr><td>Operating System</td><td>Windows, Linux, or macOS</td></tr>
+    <tr><td>Runtime</td><td>Node.js 18 or later</td></tr>
+    <tr><td>Database</td><td>PostgreSQL 16 (hosted on Neon)</td></tr>
+    <tr><td>Web browser</td><td>Google Chrome, Firefox, or Edge (latest)</td></tr>
+  </table>
+  <h3>Development Tools</h3>
+  <table>
+    <tr><th style="width:200px">Tool</th><th>Use</th></tr>
+    <tr><td>Visual Studio Code</td><td>Code editor</td></tr>
+    <tr><td>Node.js + npm</td><td>Backend runtime and package management</td></tr>
+    <tr><td>Express.js</td><td>REST API framework</td></tr>
+    <tr><td>node-postgres (pg)</td><td>PostgreSQL driver and connection pooling</td></tr>
+    <tr><td>Neon</td><td>Serverless PostgreSQL hosting</td></tr>
+    <tr><td>Bootstrap 5</td><td>Responsive UI framework</td></tr>
+    <tr><td>Chart.js 4</td><td>Charts and graphs</td></tr>
+    <tr><td>Leaflet</td><td>Interactive maps with OpenStreetMap tiles</td></tr>
+    <tr><td>Git and GitHub</td><td>Version control</td></tr>
+    <tr><td>Vercel</td><td>Deployment of the API and dashboard</td></tr>
+  </table>
+</section>
+
+<!-- ===================== 12. DATABASE DESIGN ===================== -->
+<section class="page">
+  <h2 class="section">12. Database Design and Implementation</h2>
+  <p>The database was designed by first identifying the entities and relationships, then converting the ERD into a normalised relational schema in PostgreSQL. Every table has a primary key, foreign keys enforce referential integrity, and check constraints validate domain values (for example, ratings between 1 and 5, valid statuses, and non-negative fares). Indexes were added on the columns used by the route finder and the analytical queries.</p>
+  <h3>Constraints Used</h3>
+  <ul>
+    <li><strong>Primary keys</strong> on every table (serial identity columns).</li>
+    <li><strong>Foreign keys</strong> with appropriate <span class="mono">ON DELETE</span> behaviour (cascade, set null, or restrict).</li>
+    <li><strong>Unique constraints</strong> (for example route code, bus registration number, card number, and the route_stop sequence).</li>
+    <li><strong>Check constraints</strong> on enumerated values, coordinate ranges, ratings, and monetary amounts.</li>
+  </ul>
+  <h3>Sample Data Volume</h3>
+  <p>The database was seeded with realistic data covering the BRT and feeder network plus operational records for a thirty day window. The seed data is deterministic and reproducible.</p>
+  <table>
+    <tr><th>Table</th><th>Rows</th><th>Table</th><th>Rows</th><th>Table</th><th>Rows</th></tr>
+    <tr><td>zone</td><td>7</td><td>bus_model</td><td>6</td><td>fare_card</td><td>365</td></tr>
+    <tr><td>operator</td><td>4</td><td>bus</td><td>52</td><td>card_transaction</td><td>6,320</td></tr>
+    <tr><td>route_type</td><td>4</td><td>driver</td><td>55</td><td>journey</td><td>6,000</td></tr>
+    <tr><td>route</td><td>7</td><td>staff</td><td>35</td><td>route_search</td><td>3,148</td></tr>
+    <tr><td>stop</td><td>49</td><td>schedule</td><td>126</td><td>feedback</td><td>850</td></tr>
+    <tr><td>route_stop</td><td>61</td><td>trip_log</td><td>3,780</td><td>incident</td><td>130</td></tr>
+    <tr><td>fare_stage</td><td>9</td><td>maintenance</td><td>160</td><td>passenger</td><td>420</td></tr>
+  </table>
+  <p class="muted">Total: more than 22,000 rows across 21 tables.</p>
+  <h3>Example DDL (route_stop, the graph edge table)</h3>
+  <pre><span class="k">CREATE TABLE</span> route_stop (
+  route_stop_id         <span class="f">SERIAL PRIMARY KEY</span>,
+  route_id              <span class="k">INT NOT NULL REFERENCES</span> route(route_id) <span class="k">ON DELETE CASCADE</span>,
+  stop_id               <span class="k">INT NOT NULL REFERENCES</span> stop(stop_id),
+  stop_sequence         <span class="k">INT NOT NULL</span> <span class="f">CHECK</span> (stop_sequence &gt;= 1),
+  distance_from_prev_km <span class="k">NUMERIC</span>(6,2) <span class="k">NOT NULL DEFAULT</span> 0,
+  time_from_prev_min    <span class="k">INT NOT NULL DEFAULT</span> 0,
+  fare_from_prev        <span class="k">NUMERIC</span>(6,2) <span class="k">NOT NULL DEFAULT</span> 0,
+  <span class="f">UNIQUE</span> (route_id, stop_sequence),
+  <span class="f">UNIQUE</span> (route_id, stop_id)
+);</pre>
+</section>
+
+<!-- ===================== 13. API DEVELOPMENT ===================== -->
+<section class="page">
+  <h2 class="section">13. API Development</h2>
+  <p>The REST API is built with Node.js and Express and connects to PostgreSQL through a pooled connection. It exposes three groups of endpoints: CRUD endpoints for the core entities, analytical endpoints that run aggregate queries, and the route finder endpoints. All responses are JSON.</p>
+  <h3>API Endpoints and Methods</h3>
+  <table>
+    <tr><th style="width:70px">Method</th><th>Endpoint</th><th>Description</th></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/health</td><td>Service and database health check</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/summary</td><td>Key performance indicators for the dashboard</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/ridership-by-route</td><td>Journeys and revenue per route</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/modal-split</td><td>Ridership share by service type</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/daily-ridership</td><td>Daily ridership over the last 30 days</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/daily-revenue</td><td>Daily fare revenue over the last 30 days</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/peak-hours</td><td>Passenger distribution by hour of day</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/busiest-stops</td><td>Top stops by boardings</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/fleet-fuel-mix</td><td>Fleet composition by fuel type</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/payment-methods</td><td>Top ups by payment method</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/on-time-performance</td><td>On-time percentage per route</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/rating-by-route</td><td>Average passenger rating per route</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/top-od-pairs</td><td>Most searched destinations</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/analytics/incidents-by-type</td><td>Incidents grouped by type</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/finder/stops</td><td>All stops for the search pickers</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/finder/plan?from=&amp;to=</td><td>Plan a journey (Dijkstra) with legs, fare, and time</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/{resource}</td><td>List a resource (routes, stops, passengers, drivers, etc.)</td></tr>
+    <tr><td><span class="method GET">GET</span></td><td>/api/{resource}/:id</td><td>Read a single record</td></tr>
+    <tr><td><span class="method POST">POST</span></td><td>/api/{resource}</td><td>Create a record</td></tr>
+    <tr><td><span class="method PUT">PUT</span></td><td>/api/{resource}/:id</td><td>Update a record</td></tr>
+    <tr><td><span class="method DELETE">DELETE</span></td><td>/api/{resource}/:id</td><td>Delete a record</td></tr>
+  </table>
+  <p>CRUD endpoints are provided for eight resources: routes, stops, passengers, drivers, operators, buses, feedback, and incidents.</p>
+  <h3>The Route Finder Engine</h3>
+  <p>The route finder loads the network as a graph where each node is a (route, stop) state. Riding moves along consecutive stops of a route, and a transfer switches routes at a shared stop with a time penalty. Dijkstra's algorithm finds the lowest total travel time, after which the fare for each leg is computed from the fare-stage table. The result is a step-by-step itinerary with the total fare, time, number of stops, and transfers.</p>
+  <h3>API Testing Results</h3>
+  <p>The API was tested with an in-process test harness and the browser-based testing console. All endpoint checks returned HTTP 200. A representative route plan (Gulshan-e-Johar to Sea View) correctly returned a two-leg journey: route R-10 to Tower, then a transfer to route EV-1 to Sea View, total fare PKR 100, 96 minutes, 10 stops, 1 transfer.</p>
+  <table>
+    <tr><th>Test</th><th>Result</th></tr>
+    <tr><td>Health check and database connectivity</td><td>Passed (200)</td></tr>
+    <tr><td>13 analytical endpoints</td><td>Passed (200, valid JSON)</td></tr>
+    <tr><td>CRUD round trip (POST, GET, PUT, DELETE)</td><td>Passed (201, 200, 200, 200)</td></tr>
+    <tr><td>Route finder with transfer</td><td>Passed (correct legs, fare, time)</td></tr>
+    <tr><td>Invalid input handling (same stop, unknown id)</td><td>Passed (400 / 404 with message)</td></tr>
+  </table>
+</section>
+
+<!-- ===================== 14. SCREENSHOTS OF API METHODS ===================== -->
+<section class="page">
+  <h2 class="section">14. Screenshots of API Methods</h2>
+  <p>The screenshots below were captured from the project's API testing console, which calls each endpoint over HTTP and displays the method, path, status code, response time, and JSON response.</p>
+  <figure>
+    <img src="report-assets/api-test.png" alt="API testing console GET results" />
+    <figcaption>Figure 3: GET endpoints returning HTTP 200 with JSON responses and response times.</figcaption>
+  </figure>
+  <figure>
+    <img src="report-assets/api-crud.png" alt="API CRUD round trip" />
+    <figcaption>Figure 4: CRUD round trip showing POST (201 Created), GET (200), PUT (200), and DELETE (200).</figcaption>
+  </figure>
+</section>
+
+<!-- ===================== 15. JS CODE SHOWING API CALLS ===================== -->
+<section class="page">
+  <h2 class="section">15. JavaScript Code Showing API Calls</h2>
+  <p>The dashboard consumes the API using the browser fetch API. A single helper wraps every request, and the chart and finder modules call it.</p>
+  <h3>api.js - the fetch helper</h3>
+  <pre><span class="c">// Thin fetch (AJAX) wrapper used by the whole dashboard.</span>
+<span class="k">async function</span> <span class="f">api</span>(path) {
+  <span class="k">const</span> res = <span class="k">await</span> fetch(window.API_BASE + path);
+  <span class="k">if</span> (!res.ok) {
+    <span class="k">let</span> msg = res.status;
+    <span class="k">try</span> { msg = (<span class="k">await</span> res.json()).error || msg; } <span class="k">catch</span> (e) {}
+    <span class="k">throw new</span> Error(path + <span class="s">" -&gt; "</span> + msg);
+  }
+  <span class="k">return</span> res.json();
+}</pre>
+  <h3>charts.js - calling an analytical endpoint and drawing a chart</h3>
+  <pre><span class="k">async function</span> <span class="f">bar</span>(id, path, opts) {
+  <span class="k">const</span> rows = <span class="k">await</span> <span class="f">api</span>(path);              <span class="c">// AJAX call to the REST API</span>
+  <span class="k">new</span> Chart(document.getElementById(id), {
+    type: <span class="s">"bar"</span>,
+    data: {
+      labels: rows.map(r =&gt; r[opts.labelKey]),
+      datasets: [{ data: rows.map(r =&gt; Number(r[opts.valueKey])) }]
+    }
+  });
+}
+<span class="f">bar</span>(<span class="s">"ridershipChart"</span>, <span class="s">"/api/analytics/ridership-by-route"</span>, { labelKey: <span class="s">"code"</span>, valueKey: <span class="s">"rides"</span> });</pre>
+  <h3>finder.js - requesting a journey plan</h3>
+  <pre><span class="k">async function</span> <span class="f">findRoute</span>() {
+  <span class="k">const</span> from = document.getElementById(<span class="s">"fromStop"</span>).value;
+  <span class="k">const</span> to   = document.getElementById(<span class="s">"toStop"</span>).value;
+  <span class="k">const</span> plan = <span class="k">await</span> <span class="f">api</span>(<span class="s">`/api/finder/plan?from=${from}&amp;to=${to}`</span>);
+  <span class="f">renderPlan</span>(plan);   <span class="c">// draw the itinerary and the map polyline</span>
+}</pre>
+</section>
+
+<!-- ===================== 16. DASHBOARD DESIGN ===================== -->
+<section class="page">
+  <h2 class="section">16. Dashboard Design and Implementation</h2>
+  <p>The dashboard is a single page built with HTML, CSS, Bootstrap, and JavaScript. On load it calls the summary endpoint to populate the key performance indicator cards, then renders every chart by fetching its analytical endpoint, and finally initialises the route finder with the live map.</p>
+  <h3>Key Performance Indicators</h3>
+  <p>Eight cards summarise the network: active routes, network stops, network length, registered riders, journeys in the last thirty days, fare revenue, average rating, and on-time performance.</p>
+  <h3>Charts on a Single Page</h3>
+  <p>The dashboard presents all visualisations on one page using Chart.js, covering every required chart type:</p>
+  <table>
+    <tr><th style="width:150px">Chart type</th><th>Visualisation</th></tr>
+    <tr><td>Bar</td><td>Ridership by route, on-time performance, average rating, incidents by type</td></tr>
+    <tr><td>Horizontal bar</td><td>Busiest stops, most searched destinations</td></tr>
+    <tr><td>Line</td><td>Daily ridership trend</td></tr>
+    <tr><td>Area</td><td>Daily fare revenue, passengers by hour of day</td></tr>
+    <tr><td>Doughnut</td><td>Ridership by service type, top ups by payment method</td></tr>
+    <tr><td>Pie</td><td>Fleet by fuel type</td></tr>
+  </table>
+  <h3>Route Finder and Map</h3>
+  <p>The route finder lets the user pick an origin and destination, then displays the planned journey as a set of legs with fare and time, and draws each leg on a Leaflet map using the route's colour. Transfers are highlighted between legs.</p>
+</section>
+
+<!-- ===================== 17. FINAL OUTPUT SCREENSHOTS ===================== -->
+<section class="page">
+  <h2 class="section">17. Final Output Screenshots</h2>
+  <figure>
+    <img src="report-assets/dash-top.png" alt="Dashboard top" />
+    <figcaption>Figure 5: Dashboard with the route finder, live map, and key performance indicator cards.</figcaption>
+  </figure>
+  <figure>
+    <img src="report-assets/finder.png" alt="Route finder closeup" />
+    <figcaption>Figure 7: A planned journey with a transfer, fare, time, and stops drawn on the map.</figcaption>
+  </figure>
+</section>
+<section class="page">
+  <figure>
+    <img src="report-assets/dash-full.png" alt="Full dashboard" style="max-height: 232mm;" />
+    <figcaption>Figure 6: The full analytical dashboard showing all charts on a single page.</figcaption>
+  </figure>
+</section>
+
+<!-- ===================== 18. CONCLUSION ===================== -->
+<section class="page">
+  <h2 class="section">18. Conclusion</h2>
+  <p>The Smart Local Bus Route Finder demonstrates a complete database-driven analytical dashboard built to the project guidelines. A normalised PostgreSQL database of 21 tables, hosted on Neon, stores the network, fleet, and operational data with full primary keys, foreign keys, and constraints. A Node.js and Express REST API exposes CRUD and analytical endpoints that return JSON, and a single-page dashboard built with HTML, CSS, Bootstrap, and JavaScript consumes this API to present meaningful insights through bar, line, area, pie, and doughnut charts.</p>
+  <p>Beyond the analytical dashboard, the project implements a practical route finding engine using Dijkstra's shortest path algorithm over the bus stop graph, with automatic transfer detection, fare estimation, and travel time estimation, visualised on an interactive map. The system was tested end to end, with all API endpoints returning correct responses and the route finder producing accurate multi-route journeys.</p>
+  <p>The project meets every submission requirement: a relational schema of more than sixteen tables, a working REST API, and an analytical dashboard presenting insights generated from the database. The architecture is modular and can be extended to a larger network, additional analytics, and live data sources in future work.</p>
+</section>
+
+<!-- ===================== 19. REFERENCES ===================== -->
+<section class="page">
+  <h2 class="section">19. References</h2>
+  <ol>
+    <li>PostgreSQL Global Development Group. PostgreSQL 16 Documentation. https://www.postgresql.org/docs/</li>
+    <li>Neon. Serverless PostgreSQL Documentation. https://neon.tech/docs/</li>
+    <li>OpenJS Foundation. Node.js Documentation. https://nodejs.org/en/docs/</li>
+    <li>Express.js. Express Web Framework Documentation. https://expressjs.com/</li>
+    <li>node-postgres. pg Documentation. https://node-postgres.com/</li>
+    <li>Bootstrap. Bootstrap 5 Documentation. https://getbootstrap.com/</li>
+    <li>Chart.js. Chart.js Documentation. https://www.chartjs.org/docs/</li>
+    <li>Leaflet. Leaflet Documentation. https://leafletjs.com/</li>
+    <li>OpenStreetMap contributors. Map data. https://www.openstreetmap.org/</li>
+    <li>E. W. Dijkstra. A note on two problems in connexion with graphs. Numerische Mathematik, 1959.</li>
+    <li>TransKarachi and Sindh Mass Transit Authority. Karachi BRT public information.</li>
+  </ol>
+</section>
+
+</body>
+</html>

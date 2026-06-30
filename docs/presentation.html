@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Smart Local Bus Route Finder - Presentation</title>
+<style>
+  @page { size: A4 landscape; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", Calibri, Arial, sans-serif; color: #1f2933; }
+  .slide {
+    width: 297mm; height: 209.5mm; page-break-after: always; position: relative;
+    padding: 16mm 20mm 14mm; display: flex; flex-direction: column; overflow: hidden;
+    background: #ffffff;
+  }
+  .slide .num { position: absolute; bottom: 8mm; right: 14mm; font-size: 10pt; color: #94a3b8; }
+  .slide .foot { position: absolute; bottom: 8mm; left: 20mm; font-size: 9pt; color: #94a3b8; }
+  .kicker { color: #0f766e; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 11pt; margin-bottom: 6px; }
+  h1.slide-h { font-size: 30pt; color: #0b5750; margin: 0 0 14px; }
+  h2.slide-h { font-size: 24pt; color: #0b5750; margin: 0 0 16px; border-bottom: 3px solid #0f766e; padding-bottom: 8px; }
+  ul { font-size: 14.5pt; line-height: 1.7; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+  .two { display: flex; gap: 22px; flex: 1; }
+  .two .col { flex: 1; }
+  .center { align-items: center; justify-content: center; text-align: center; }
+  .pill { display: inline-block; background: #e6f5f3; color: #0b5750; border-radius: 8px; padding: 6px 14px; margin: 5px; font-weight: 600; font-size: 13pt; }
+  .stat { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+  .stat .box { background: #f1f7f6; border: 1px solid #d7e0de; border-left: 4px solid #0f766e; border-radius: 10px; padding: 12px 18px; }
+  .stat .box .v { font-size: 22pt; font-weight: 800; color: #0b5750; }
+  .stat .box .l { font-size: 10.5pt; color: #64748b; }
+  .title-slide { background: linear-gradient(135deg, #0b5750 0%, #0f766e 55%, #14b8a6 100%); color: #fff; }
+  .title-slide h1.slide-h { color: #fff; font-size: 34pt; }
+  .title-slide .sub { font-size: 15pt; color: #d7f5f0; margin-bottom: 30px; }
+  .title-slide .names { font-size: 16pt; }
+  .title-slide .logo { width: 90px; height: 90px; border-radius: 22px; background: rgba(255,255,255,.16); display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:18px; }
+  .slide img.shot { max-width: 100%; max-height: 150mm; border: 1px solid #d7e0de; border-radius: 8px; align-self: center; }
+  table { width: 100%; border-collapse: collapse; font-size: 12pt; }
+  th, td { border: 1px solid #cbd5d1; padding: 7px 12px; text-align: left; }
+  th { background: #e6f5f3; color: #0b5750; }
+  .mono { font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+
+<!-- 1 -->
+<section class="slide title-slide center">
+  <div class="logo">&#128652;</div>
+  <h1 class="slide-h">Smart Local Bus Route Finder</h1>
+  <div class="sub">A Database-Driven Analytical Dashboard for Karachi's Public Bus Network</div>
+  <div class="names">
+    <strong>Abdul Rafay</strong> (2412182) &nbsp;&middot;&nbsp; <strong>Varun Sainani</strong> (2412222)
+  </div>
+  <div style="margin-top:18px; font-size:12pt; color:#bdeae4;">Database Systems Final Project &middot; SZABIST University, Karachi</div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="kicker">The Problem</div>
+  <h2 class="slide-h">Why this project</h2>
+  <ul>
+    <li>Millions ride Karachi's buses daily, but there is no single system telling them which bus to take.</li>
+    <li>Passengers do not know transfer points, fares, or travel time in advance.</li>
+    <li>Operators have no consolidated view of ridership, revenue, reliability, or feedback.</li>
+    <li>Route information is scattered across informal sources instead of one database.</li>
+  </ul>
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">2</div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <div class="kicker">The Solution</div>
+  <h2 class="slide-h">A three-tier web application</h2>
+  <div class="two">
+    <div class="col">
+      <ul>
+        <li><strong>Database:</strong> PostgreSQL on Neon, 21 related tables</li>
+        <li><strong>Backend:</strong> Node.js + Express REST API (JSON)</li>
+        <li><strong>Frontend:</strong> HTML, CSS, Bootstrap, JavaScript</li>
+        <li><strong>Charts:</strong> Chart.js on a single dashboard page</li>
+        <li><strong>Map:</strong> Leaflet + OpenStreetMap route view</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="stat" style="flex-direction:column">
+        <div class="box"><div class="v">21</div><div class="l">database tables</div></div>
+        <div class="box"><div class="v">20+</div><div class="l">REST API endpoints</div></div>
+        <div class="box"><div class="v">13</div><div class="l">analytical charts</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">3</div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <div class="kicker">Technology Stack</div>
+  <h2 class="slide-h">Built with</h2>
+  <div>
+    <span class="pill">PostgreSQL 16</span><span class="pill">Neon (cloud DB)</span>
+    <span class="pill">Node.js</span><span class="pill">Express.js</span>
+    <span class="pill">node-postgres</span><span class="pill">HTML5</span>
+    <span class="pill">CSS3</span><span class="pill">Bootstrap 5</span>
+    <span class="pill">JavaScript (Fetch / AJAX)</span><span class="pill">Chart.js</span>
+    <span class="pill">Leaflet</span><span class="pill">Vercel</span><span class="pill">Git / GitHub</span>
+  </div>
+  <div style="margin-top:26px">
+    <h3 style="color:#0f766e">Data coverage</h3>
+    <ul>
+      <li>BRT: Green Line, Red Line, Orange Line</li>
+      <li>Feeder: Peoples Bus Service R-10, R-12</li>
+      <li>Electric: EV-1, EV-3 &middot; shared interchange stops enable transfers</li>
+    </ul>
+  </div>
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">4</div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <div class="kicker">Database Design</div>
+  <h2 class="slide-h">21 tables, fully constrained</h2>
+  <div class="two">
+    <div class="col">
+      <ul style="font-size:13pt">
+        <li><strong>Network:</strong> zone, operator, route_type, route, stop, route_stop, fare_stage</li>
+        <li><strong>Fleet and ops:</strong> bus_model, bus, driver, staff, schedule, trip_log, maintenance</li>
+        <li><strong>Passengers and revenue:</strong> passenger, fare_card, card_transaction, journey, route_search, feedback, incident</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="stat" style="flex-direction:column">
+        <div class="box"><div class="v">22,000+</div><div class="l">sample rows seeded</div></div>
+        <div class="box"><div class="v">6,000</div><div class="l">passenger journeys</div></div>
+        <div class="box"><div class="v">PK / FK</div><div class="l">+ check constraints throughout</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">5</div>
+</section>
+
+<!-- 6 -->
+<section class="slide center">
+  <div class="kicker" style="align-self:flex-start">Entity Relationship Diagram</div>
+  <img class="shot" src="report-assets/erd.png" alt="ERD" />
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">6</div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <div class="kicker">REST API</div>
+  <h2 class="slide-h">Endpoints return JSON</h2>
+  <table>
+    <tr><th>Group</th><th>Examples</th></tr>
+    <tr><td>Analytics (13)</td><td class="mono">/api/analytics/summary, ridership-by-route, peak-hours, on-time-performance</td></tr>
+    <tr><td>Route finder</td><td class="mono">/api/finder/stops, /api/finder/plan?from=&amp;to=</td></tr>
+    <tr><td>CRUD (8 resources)</td><td class="mono">GET, POST, PUT, DELETE on routes, stops, passengers, ...</td></tr>
+  </table>
+  <ul style="margin-top:14px">
+    <li>Connects to PostgreSQL through a pooled connection</li>
+    <li>Performs CRUD and fetches analytical / statistical data</li>
+  </ul>
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">7</div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <div class="kicker">Route Finder Engine</div>
+  <h2 class="slide-h">Dijkstra shortest path</h2>
+  <ul>
+    <li>The network is a graph of <span class="mono">(route, stop)</span> states.</li>
+    <li>Riding moves along a route; a transfer switches routes at a shared stop with a time penalty.</li>
+    <li>Dijkstra's algorithm finds the lowest total travel time.</li>
+    <li>Fare for each leg is computed from the fare-stage table; results show legs, fare, time, stops, and transfers.</li>
+  </ul>
+  <div class="stat">
+    <div class="box"><div class="v">Gulshan-e-Johar &rarr; Sea View</div><div class="l">R-10 to Tower, transfer to EV-1: PKR 100, 96 min, 1 transfer</div></div>
+  </div>
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">8</div>
+</section>
+
+<!-- 9 -->
+<section class="slide center">
+  <div class="kicker" style="align-self:flex-start">Analytical Dashboard</div>
+  <img class="shot" src="report-assets/dash-top.png" alt="Dashboard" />
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">9</div>
+</section>
+
+<!-- 10 -->
+<section class="slide center">
+  <div class="kicker" style="align-self:flex-start">Route Finder and Map</div>
+  <img class="shot" src="report-assets/finder.png" alt="Route finder" />
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">10</div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <div class="kicker">Testing</div>
+  <h2 class="slide-h">Verified end to end</h2>
+  <table>
+    <tr><th>Test</th><th>Result</th></tr>
+    <tr><td>Health and database connectivity</td><td>Passed (200)</td></tr>
+    <tr><td>13 analytical endpoints</td><td>Passed (valid JSON)</td></tr>
+    <tr><td>CRUD round trip (POST, GET, PUT, DELETE)</td><td>Passed (201, 200, 200, 200)</td></tr>
+    <tr><td>Route finder with transfer</td><td>Passed (correct fare and time)</td></tr>
+    <tr><td>Invalid input handling</td><td>Passed (400 / 404)</td></tr>
+  </table>
+  <div class="foot">Smart Local Bus Route Finder</div><div class="num">11</div>
+</section>
+
+<!-- 12 -->
+<section class="slide title-slide center">
+  <h1 class="slide-h">Thank you</h1>
+  <div class="sub">Smart Local Bus Route Finder</div>
+  <div class="names"><strong>Abdul Rafay</strong> (2412182) &nbsp;&middot;&nbsp; <strong>Varun Sainani</strong> (2412222)</div>
+  <div style="margin-top:16px; font-size:12pt; color:#bdeae4;">Database Systems Final Project &middot; SZABIST University, Karachi</div>
+</section>
+
+</body>
+</html>

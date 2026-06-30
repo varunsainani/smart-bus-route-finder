@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  body { background:#ffffff; margin:0; padding:28px; font-family:'Segoe UI',sans-serif; }
+  h2 { text-align:center; color:#0f766e; margin:0 0 4px; }
+  p.sub { text-align:center; color:#64748b; margin:0 0 18px; font-size:14px; }
+  #d { display:flex; justify-content:center; }
+</style>
+</head>
+<body>
+  <h2>Smart Local Bus Route Finder | Class Diagram</h2>
+  <p class="sub">Layered architecture: routers &rarr; services &rarr; data access &rarr; PostgreSQL &middot; Abdul Rafay (2412182) &amp; Varun Sainani (2412222)</p>
+  <div id="d">
+  <pre class="mermaid">
+classDiagram
+  direction LR
+
+  class ExpressApp {
+    +use(middleware)
+    +mountRouters()
+    +serveStatic()
+  }
+  class DbPool {
+    -connectionString
+    +query(text, params) Result
+  }
+  class AnalyticsRouter {
+    +GET summary()
+    +GET ridershipByRoute()
+    +GET dailyRidership()
+    +GET peakHours()
+  }
+  class FinderRouter {
+    +GET stops()
+    +GET plan(from, to)
+  }
+  class CrudRouter {
+    +GET list()
+    +GET read(id)
+    +POST create()
+    +PUT update(id)
+    +DELETE remove(id)
+  }
+  class AnalyticsService {
+    +getSummary() KPISet
+    +ridershipByRoute() Series
+    +modalSplit() Series
+    +busiestStops() Series
+    +onTimePerformance() Series
+  }
+  class RouteFinderService {
+    +loadGraph() Graph
+    +listStops() Stop[]
+    +planJourney(from, to) Itinerary
+    -dijkstra(graph, sources, target)
+  }
+  class CrudService {
+    +list(table)
+    +create(table, data)
+    +update(table, id, data)
+    +remove(table, id)
+  }
+
+  class Route {
+    +int route_id
+    +string code
+    +string name
+    +int route_type_id
+    +decimal length_km
+  }
+  class Stop {
+    +int stop_id
+    +string name
+    +decimal latitude
+    +decimal longitude
+  }
+  class RouteStop {
+    +int route_id
+    +int stop_id
+    +int stop_sequence
+    +int time_from_prev_min
+    +decimal fare_from_prev
+  }
+  class Journey {
+    +int journey_id
+    +int route_id
+    +int board_stop_id
+    +int alight_stop_id
+    +decimal fare
+    +int num_stops
+  }
+  class Itinerary {
+    +decimal total_fare
+    +int total_time_min
+    +int transfers
+    +Leg[] legs
+    +Point[] polyline
+  }
+
+  class DashboardApp {
+    +boot()
+    +renderKpis(summary)
+  }
+  class ChartsModule {
+    +renderAll()
+    +bar(id, endpoint)
+    +donut(id, endpoint)
+    +area(id, endpoint)
+  }
+  class FinderModule {
+    +init()
+    +findRoute()
+    +drawJourney(plan)
+  }
+  class ApiClient {
+    +api(path) JSON
+  }
+
+  ExpressApp --> AnalyticsRouter
+  ExpressApp --> FinderRouter
+  ExpressApp --> CrudRouter
+  AnalyticsRouter --> AnalyticsService
+  FinderRouter --> RouteFinderService
+  CrudRouter --> CrudService
+  AnalyticsService --> DbPool
+  RouteFinderService --> DbPool
+  CrudService --> DbPool
+  RouteFinderService ..> Itinerary : builds
+  RouteFinderService ..> RouteStop : reads
+  AnalyticsService ..> Journey : aggregates
+  Route "1" o-- "many" RouteStop
+  Stop "1" o-- "many" RouteStop
+  Route "1" o-- "many" Journey
+  DashboardApp --> ChartsModule
+  DashboardApp --> FinderModule
+  ChartsModule --> ApiClient
+  FinderModule --> ApiClient
+  ApiClient ..> ExpressApp : HTTP fetch
+  </pre>
+  </div>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "base", class: { useMaxWidth: false },
+      themeVariables: {
+        primaryColor: "#e6f5f3", primaryBorderColor: "#0f766e", primaryTextColor: "#1f2933",
+        lineColor: "#94a3b8", fontFamily: "Segoe UI", fontSize: "15px" } });
+  </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  body { background:#ffffff; margin:0; padding:28px; font-family:'Segoe UI',sans-serif; }
+  h2 { text-align:center; color:#0f766e; margin:0 0 4px; }
+  p.sub { text-align:center; color:#64748b; margin:0 0 18px; font-size:14px; }
+  #d { display:flex; justify-content:center; }
+</style>
+</head>
+<body>
+  <h2>Smart Local Bus Route Finder | Entity Relationship Diagram</h2>
+  <p class="sub">21 entities &middot; PostgreSQL &middot; Abdul Rafay (2412182) &amp; Varun Sainani (2412222)</p>
+  <div id="d">
+  <pre class="mermaid">
+erDiagram
+  ZONE        ||--o{ STOP          : "contains"
+  ZONE        ||--o{ PASSENGER     : "home zone"
+  OPERATOR    ||--o{ ROUTE         : "runs"
+  OPERATOR    ||--o{ BUS           : "owns"
+  OPERATOR    ||--o{ DRIVER        : "employs"
+  OPERATOR    ||--o{ STAFF         : "employs"
+  ROUTE_TYPE  ||--o{ ROUTE         : "categorises"
+  ROUTE_TYPE  ||--o{ FARE_STAGE    : "priced by"
+  ROUTE       ||--o{ ROUTE_STOP    : "has"
+  STOP        ||--o{ ROUTE_STOP    : "served by"
+  STOP        ||--o{ STAFF         : "posted at"
+  BUS_MODEL   ||--o{ BUS           : "specifies"
+  ROUTE       ||--o{ BUS           : "assigned"
+  ROUTE       ||--o{ SCHEDULE      : "scheduled"
+  BUS         ||--o{ SCHEDULE      : "operates"
+  DRIVER      ||--o{ SCHEDULE      : "drives"
+  SCHEDULE    ||--o{ TRIP_LOG      : "logged as"
+  BUS         ||--o{ MAINTENANCE   : "serviced in"
+  PASSENGER   ||--o{ FARE_CARD     : "holds"
+  FARE_CARD   ||--o{ CARD_TRANSACTION : "records"
+  PASSENGER   ||--o{ JOURNEY       : "takes"
+  FARE_CARD   ||--o{ JOURNEY       : "pays"
+  ROUTE       ||--o{ JOURNEY       : "used in"
+  STOP        ||--o{ JOURNEY       : "board/alight"
+  PASSENGER   ||--o{ ROUTE_SEARCH  : "searches"
+  STOP        ||--o{ ROUTE_SEARCH  : "from/to"
+  ROUTE       ||--o{ ROUTE_SEARCH  : "recommended"
+  PASSENGER   ||--o{ FEEDBACK      : "submits"
+  ROUTE       ||--o{ FEEDBACK      : "about"
+  JOURNEY     ||--o{ FEEDBACK      : "about"
+  ROUTE       ||--o{ INCIDENT      : "affects"
+  STOP        ||--o{ INCIDENT      : "at"
+
+  ZONE { int zone_id PK
+         varchar name
+         varchar code }
+  OPERATOR { int operator_id PK
+             varchar name
+             varchar operator_type }
+  ROUTE_TYPE { int route_type_id PK
+               varchar name
+               numeric base_fare }
+  ROUTE { int route_id PK
+          varchar code
+          int route_type_id FK
+          int operator_id FK
+          numeric length_km }
+  STOP { int stop_id PK
+         varchar name
+         int zone_id FK
+         numeric latitude
+         numeric longitude }
+  ROUTE_STOP { int route_stop_id PK
+               int route_id FK
+               int stop_id FK
+               int stop_sequence
+               int time_from_prev_min }
+  FARE_STAGE { int fare_stage_id PK
+               int route_type_id FK
+               numeric max_distance_km
+               numeric fare }
+  BUS_MODEL { int bus_model_id PK
+              varchar manufacturer
+              varchar fuel_type
+              int seating_capacity }
+  BUS { int bus_id PK
+        varchar registration_no
+        int bus_model_id FK
+        int operator_id FK
+        int route_id FK
+        varchar status }
+  DRIVER { int driver_id PK
+           varchar full_name
+           varchar license_no
+           int operator_id FK }
+  STAFF { int staff_id PK
+          varchar full_name
+          varchar role
+          int stop_id FK
+          int operator_id FK }
+  SCHEDULE { int schedule_id PK
+             int route_id FK
+             int bus_id FK
+             int driver_id FK
+             time departure_time }
+  TRIP_LOG { int trip_log_id PK
+             int schedule_id FK
+             date service_date
+             int passenger_count
+             boolean on_time }
+  MAINTENANCE { int maintenance_id PK
+                int bus_id FK
+                date maintenance_date
+                numeric cost }
+  PASSENGER { int passenger_id PK
+              varchar full_name
+              varchar email
+              int home_zone_id FK }
+  FARE_CARD { int fare_card_id PK
+              varchar card_number
+              int passenger_id FK
+              numeric balance }
+  CARD_TRANSACTION { int transaction_id PK
+                     int fare_card_id FK
+                     numeric amount
+                     varchar txn_type }
+  JOURNEY { int journey_id PK
+            int passenger_id FK
+            int fare_card_id FK
+            int route_id FK
+            int board_stop_id FK
+            int alight_stop_id FK
+            numeric fare }
+  ROUTE_SEARCH { int search_id PK
+                 int passenger_id FK
+                 int from_stop_id FK
+                 int to_stop_id FK
+                 int recommended_route_id FK }
+  FEEDBACK { int feedback_id PK
+             int passenger_id FK
+             int route_id FK
+             int journey_id FK
+             int rating }
+  INCIDENT { int incident_id PK
+             int route_id FK
+             int stop_id FK
+             varchar incident_type
+             varchar severity }
+  </pre>
+  </div>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "base", er: { useMaxWidth: false },
+      themeVariables: {
+        primaryColor: "#e6f5f3", primaryBorderColor: "#0f766e", primaryTextColor: "#1f2933",
+        lineColor: "#94a3b8", fontFamily: "Segoe UI", fontSize: "16px" } });
+  </script>
+</body>
+</html>
