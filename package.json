@@ -1,0 +1,19 @@
+{
+  "name": "smart-bus-route-finder",
+  "version": "1.0.0",
+  "description": "Smart Local Bus Route Finder - database driven analytical dashboard (Database Systems final project)",
+  "private": true,
+  "scripts": {
+    "start": "node backend/server.js",
+    "schema": "node backend/db/run-sql.js database/schema.sql",
+    "seed": "node backend/db/seed.js"
+  },
+  "author": "Abdul Rafay (2412182), Varun Sainani (2412222)",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
